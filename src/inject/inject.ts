@@ -65,7 +65,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             const requestId = message.requestId;
             const activeInput = activeInputs.find((ai) => ai.requestId === requestId);
             if (activeInput) {
-                setInputTextWithDebounce(activeInput.input, message.tweet, 100);
+                setInputTextWithDebounce(activeInput.input, message.tweet, 200);
             }
 
             break;
