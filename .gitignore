@@ -7,3 +7,4 @@ node_modules/
 .history
 */.DS_Store
 .DS_Store
+*.zip

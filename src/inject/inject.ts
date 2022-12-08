@@ -6,13 +6,6 @@ import { setInputText, setInputTextWithDebounce } from "./dom/set_input_text";
 import { TwitterClient } from "./twitter_client/twitter_client";
 import { replyPrompt, whatsHappeningPrompt } from "../background/chat_gpt_client/prompts";
 
-// inputs that are waiting for gpt data
-let activeInputs: Array<{
-    requestId: number
-    toolbar: Element,
-    input: Element,
-}> = [];
-
 const onToolBarAdded = (toolBarEl: Element) => {
     const inputEl = findClosestInput(toolBarEl);
     let prompt = '';
@@ -34,14 +27,7 @@ const onToolBarAdded = (toolBarEl: Element) => {
                 prompt = whatsHappeningPrompt(trendingResponse);
             }
 
-            const requestId = Math.random();
-            activeInputs.push({
-                requestId,
-                toolbar: toolBarEl,
-                input: inputEl,
-            });
-            const text = await generateText(requestId, prompt);
-            activeInputs = activeInputs.filter((ai) => ai.requestId != requestId);
+            const requestId = inputEl.getAttribute("aria-activedescendant")!;            const text = await generateText(requestId, prompt);
             if (text) {
                 setInputText(inputEl, text);
             } else { // show error
@@ -63,9 +49,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     switch(message.type) {
         case 'partial_tweet':
             const requestId = message.requestId;
-            const activeInput = activeInputs.find((ai) => ai.requestId === requestId);
+            const activeInput = document.querySelector(`div[aria-activedescendant="${requestId}"]`);
             if (activeInput) {
-                setInputTextWithDebounce(activeInput.input, message.tweet, 200);
+                setInputTextWithDebounce(activeInput, message.tweet, 200);
             }
 
             break;

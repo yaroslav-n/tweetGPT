@@ -7,17 +7,18 @@ let savedText = '';
 export const setInputTextWithDebounce = async (inputEl: Element, text: string, debounceMs: number) => {
   savedText = text;
   if (!debounceTimeout) {
+    setInputText(inputEl, text);
     debounceTimeout = setTimeout(() => {
       setInputText(inputEl, savedText);
       debounceTimeout = undefined;
     }, debounceMs);
-    setInputText(inputEl, text);
   }
 };
 
 
 export const setInputText = async (inputEl: Element, text: string) => {
     (inputEl as any).focus();
+    await wait(1);
     try { document.execCommand('selectAll'); } catch(e) {}
-    try { document.execCommand('insertHTML', false, `<span data-text="true">${text}</span>`); } catch(e) {}
+    try { document.execCommand('insertHTML', false, text); } catch(e) {}
 };
