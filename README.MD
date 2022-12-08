@@ -1,6 +1,6 @@
 <img src="./docs/logo.png" height="128">
 
-#TweetGPT Chrome Extension
+# tweetGPT Chrome Extension
 
 ## Requirements
 To use this extension, will you need:
@@ -17,12 +17,12 @@ To use this extension, will you need:
 You can start using the extension now.
 
 
-## How to use
+## How to use tweetGPT
 When you open a new tab with Twitter, you will see this icon under the tweet section:
 
 <img src="./docs/screenshot.png" height="120">
 
-When you press it, a new tweet will be generated. TweetGPT will choose a random type of tweet: positive, negative, controversial, etc.
+When you press it, a new tweet will be generated. The extension will choose a random type of tweet: positive, negative, controversial, etc.
 
 For a reply, it will generate a tweet based on the original tweet. For a new tweet, it will write a tweet based on what's trending right now.
 
@@ -31,3 +31,6 @@ For a reply, it will generate a tweet based on the original tweet. For a new twe
 ## ⚠️ Warning
 TweetGPT generates positive, negative and controversial tweets _randomly_. It will sometimes generate controversial or even offensive tweets.
 Remember, this is like an L2 autopilot - the driver is responsible for the outcome. Don't tweet what you disagree with, just re-generate the tweet instead.
+
+## Feedback
+If you have feedback, please create an issue in the repository or simply send me a DM in Twitter: [@512x512](https://twitter.com/512x512)
