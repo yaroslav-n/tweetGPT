@@ -1,5 +1,6 @@
 <img src="./docs/logo.png" height="128">
-# TweetGPT Chrome Extension
+
+#TweetGPT Chrome Extension
 
 ## Requirements
 To use this extension, will you need:
