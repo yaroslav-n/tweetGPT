@@ -25,6 +25,7 @@ When you open a new tab with Twitter, you will see this icon under the tweet sec
 When you press it, a new tweet will be generated. TweetGPT will choose a random type of tweet: positive, negative, controversial, etc.
 
 For a reply, it will generate a tweet based on the original tweet. For a new tweet, it will write a tweet based on what's trending right now.
+
 <img src="./docs/reply.gif" height="379" width="609">
 
 ## ⚠️ Warning
