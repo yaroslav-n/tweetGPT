@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "moduleResolution": "node",
+        "types": ["node", "chrome"],
+        "allowJs": false,
+        "removeComments": false,
+        "strict": true,
+        "skipLibCheck": true,
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules"]
+}
+  

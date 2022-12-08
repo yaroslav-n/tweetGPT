@@ -1,0 +1,42 @@
+.gptIconWrapper {
+    min-width: 36px;
+    min-height: 36px;
+    border-radius: 100px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+}
+
+.gptIconWrapper:hover {
+    background-color: rgba(29, 155, 240, 0.1);
+}
+
+.gptIconWrapper.loading {
+    animation: pulsate 1s linear infinite;
+    pointer-events: none;
+    cursor: default;
+    background-color: transparent !important;
+}
+
+.gptIcon {
+    max-height: 20px;
+    max-width: 20px;
+}
+
+.gptIcon.error {
+    animation: error 0.5s linear 2;
+}
+
+@keyframes pulsate {
+    from { opacity: 1; }
+    50% { opacity: 0.3; }
+    to { opacity: 1; }
+}
+
+@keyframes error {
+    from { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    to { transform: scale(1); }
+}

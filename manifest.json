@@ -1,0 +1,41 @@
+{
+    "name": "tweetGPT",
+    "action": {},
+    "manifest_version": 3,
+    "version": "1.0",
+    "description": "Writes tweets with chatGPT",
+    "permissions": [
+      "activeTab",
+      "scripting",
+      "storage"
+    ],
+    "host_permissions": [
+      "https://chat.openai.com/*"
+    ],
+    "content_scripts": [
+        {
+          "matches": ["https://*.twitter.com/*"],
+          "css": ["css/inject.css"],
+          "js": ["lib/inject.js"]
+        },
+        {
+          "matches": ["https://chat.openai.com/*"],
+          "js": ["lib/inject_openai.js"]
+        }
+      ],
+    "icons": {
+        "16": "icons/16.png",
+        "32": "icons/32.png",
+        "48": "icons/48.png",
+        "128": "icons/128.png"
+    },
+    "background": {
+      "service_worker": "lib/background.js"
+    },
+    "web_accessible_resources": [
+        {
+            "resources": ["icons/button.svg", "icons/button_error.svg"],
+            "matches": ["https://*.twitter.com/*"]
+        }
+    ]
+  }
