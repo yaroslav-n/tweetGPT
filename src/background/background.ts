@@ -22,7 +22,15 @@ chrome.runtime.onMessage.addListener((message: Message, sender, sendResponse) =>
             const onPartialResults = (tweet: string) => chrome.tabs.sendMessage(sender.tab!.id!, {type: 'partial_tweet', tweet, requestId});
             const onError = (repeat?: boolean) => sendResponse(undefined);
             gptChat.generateTweet(message.prompt, onPartialResults, onError).then(
-                (gptMessage) => sendResponse(gptMessage), 
+                async (text) => {
+                    let finalText = text;
+                    const savedSettings = await chrome.storage.local.get('isAddSignature')
+                    const isAddSignature = savedSettings.isAddSignature ?? true;
+                    if (isAddSignature) {
+                        finalText = text + ' — tweetGPT';
+                    }
+                    sendResponse(finalText)
+                }, 
                 onError,
             );
             break;

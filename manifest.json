@@ -1,6 +1,8 @@
 {
     "name": "tweetGPT",
-    "action": {},
+    "action": {
+      "default_popup": "./src/popup/popup.html"
+    },
     "manifest_version": 3,
     "version": "1.0",
     "description": "Writes tweets with chatGPT",

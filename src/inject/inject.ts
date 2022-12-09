@@ -2,7 +2,7 @@ import { addGPTButton, showErrorButton } from "./dom/add_gpt_button";
 import { createObserver } from "./dom/create_observer";
 import { findClosestInput } from "./dom/find_closest_input";
 import { generateText } from "./utils/generate_text";
-import { setInputText, setInputTextWithDebounce } from "./dom/set_input_text";
+import { setInputText } from "./dom/set_input_text";
 import { TwitterClient } from "./twitter_client/twitter_client";
 import { replyPrompt, whatsHappeningPrompt } from "../background/chat_gpt_client/prompts";
 
@@ -27,7 +27,8 @@ const onToolBarAdded = (toolBarEl: Element) => {
                 prompt = whatsHappeningPrompt(trendingResponse);
             }
 
-            const requestId = inputEl.getAttribute("aria-activedescendant")!;            const text = await generateText(requestId, prompt);
+            const requestId = inputEl.getAttribute("aria-activedescendant")!;
+            const text = await generateText(requestId, prompt);
             if (text) {
                 setInputText(inputEl, text);
             } else { // show error
@@ -51,13 +52,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             const requestId = message.requestId;
             const activeInput = document.querySelector(`div[aria-activedescendant="${requestId}"]`);
             if (activeInput) {
-                setInputTextWithDebounce(activeInput, message.tweet, 200);
+                setInputText(activeInput, message.tweet);
             }
 
             break;
     }
 });
-
 
 // observe dom tree to detect all tweet inputs once they are created
 const toolbarObserver = createObserver("div[data-testid=\"toolBar\"]", onToolBarAdded, onToolBarRemoved);
