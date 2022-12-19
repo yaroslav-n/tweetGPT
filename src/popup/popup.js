@@ -10,6 +10,19 @@ const setSignatureState = async () => {
     }
 }
 
+const setRealtimeState = async () => {
+    const state = await chrome.storage.local.get('isRealtime');
+    const isRealtime = state.isRealtime ?? true;
+
+    const checkboxEl = document.getElementById('realtime');
+    if (isRealtime) {
+        checkboxEl.setAttribute('checked', 'true');
+    } else {
+        checkboxEl.removeAttribute('checked');
+    }
+}
+
+
 const onSignatureToggle = async () => {
     const state = await chrome.storage.local.get('isAddSignature');
     const isAddSignature = state.isAddSignature ?? true;
@@ -19,7 +32,20 @@ const onSignatureToggle = async () => {
     await setSignatureState();
 }
 
+const onRealtimeToggle = async () => {
+    const state = await chrome.storage.local.get('isRealtime');
+    const isRealtime = state.isRealtime ?? true;
+
+    const newIsRealtime= !isRealtime;
+    await chrome.storage.local.set({'isRealtime': newIsRealtime});
+    await setRealtimeState();
+}
+
+
 
 setSignatureState();
+setRealtimeState();
+
 
 document.getElementById('signature').onclick = onSignatureToggle;
+document.getElementById('realtime').onclick = onRealtimeToggle;

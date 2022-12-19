@@ -1,7 +1,13 @@
 <html>
     <body style="width:300px">
-        <input type="checkbox" id="signature" name="signature" />
-        <label for="signature">Add tweetGPT signature</label>
+        <div style="display:flex;flex-direction: row;align-items: center; justify-content: flex-start;margin-bottom:10px;">
+            <input type="checkbox" id="signature" name="signature" />
+            <label for="signature">Add tweetGPT signature</label>
+        </div>
+        <div style="display:flex;flex-direction: row;align-items: center; justify-content: flex-start;margin-bottom:10px;">
+            <input type="checkbox" id="realtime" name="realtime" />
+            <label for="realtime">Type tweet in real time (less stable)</label>
+        </div>
     </body>
     <script src="./popup.js"></script>
 </html>

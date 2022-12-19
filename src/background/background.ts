@@ -19,7 +19,12 @@ chrome.runtime.onMessage.addListener((message: Message, sender, sendResponse) =>
     switch(message.type) {
         case 'generate_tweet':
             const requestId = message.requestId;
-            const onPartialResults = (tweet: string) => chrome.tabs.sendMessage(sender.tab!.id!, {type: 'partial_tweet', tweet, requestId});
+            const onPartialResults = async (tweet: string) => {
+                const { isRealtime } = await chrome.storage.local.get('isRealtime');
+                if (isRealtime) {
+                    chrome.tabs.sendMessage(sender.tab!.id!, {type: 'partial_tweet', tweet, requestId})
+                }
+            };
             const onError = (repeat?: boolean) => sendResponse(undefined);
             gptChat.generateTweet(message.prompt, onPartialResults, onError).then(
                 async (text) => {
