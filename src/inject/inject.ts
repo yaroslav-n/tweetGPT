@@ -11,6 +11,7 @@ const onToolBarAdded = (toolBarEl: Element) => {
     let prompt = '';
     if (inputEl) {     
         addGPTButton(toolBarEl, async (type: string) => {
+            (toolBarEl as HTMLDivElement).click();
             const replyToTweet = document.querySelector("article[data-testid=\"tweet\"][tabindex=\"-1\"]");
             if (!!replyToTweet) {
                 const textEl = replyToTweet.querySelector("div[data-testid=\"tweetText\"]");
@@ -50,7 +51,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     switch(message.type) {
         case 'partial_tweet':
             const requestId = message.requestId;
-            const activeInput = document.querySelector(`div[aria-activedescendant="${requestId}"]`);
+            const activeInput = document.querySelector(`div[aria-activedescendant="${requestId}"]`) as HTMLInputElement;
             if (activeInput) {
                 setInputText(activeInput, message.tweet);
             }

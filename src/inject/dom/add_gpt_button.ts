@@ -55,7 +55,7 @@ const addGPTButtonWithType = (toolbarEl: Element, onClick: (type: string) => Pro
             <img class="gptIcon" src="${gptIconSrc}" />
         </div>
     `, "text/html");
-    const iconWrap = doc.children[0] as HTMLDivElement;
+    const iconWrap = doc.querySelector("div[id=\"gptButton\"]")! as HTMLDivElement;
 
     const buttonContainer = toolbarEl.children[0];
     
@@ -68,7 +68,6 @@ const addGPTButtonWithType = (toolbarEl: Element, onClick: (type: string) => Pro
 
         const top   = elemRect.top - bodyRect.top;
         const left = elemRect.left - bodyRect.left + 40;
-
         let optionsList: HTMLDivElement;
         let dismissHandler: GlobalEventHandlers["onclick"];
         optionsList = createOptionsList(async (type: string) => {
@@ -79,10 +78,9 @@ const addGPTButtonWithType = (toolbarEl: Element, onClick: (type: string) => Pro
                 optionsList.remove();
             }
 
-            const gptIconWrapper = document.querySelector("div[id=\"gptButton\"]")!;
-            gptIconWrapper.classList.add("loading");
+            iconWrap.classList.add("loading");
             await onClick(type);
-            gptIconWrapper.classList.remove("loading");
+            iconWrap.classList.remove("loading");
         });
 
         optionsList.style.left = `${left}px`;

@@ -40,6 +40,7 @@
 
 .gptSelectorContainer {
     position: absolute;
+    z-index: 999999;
     font-family: TwitterChirp, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: rgb(15, 20, 25);
     font-size: 15px;
