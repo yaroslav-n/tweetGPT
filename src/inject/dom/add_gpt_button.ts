@@ -12,7 +12,7 @@ const tweetTypes: Array<{ emoji: string; type: string; }> = [
     {emoji: '🤠', type: 'hillbilly'},
     {emoji: '🏴‍☠️', type: 'pirate'},
     {emoji: '🤣', type: 'humorous'},
-    {emoji: '🙄', type: 'passive agressive'}
+    {emoji: '🙄', type: 'passive aggressive'}
 ];
 
 export const addGPTButton = async (toolbarEl: Element, onClick: (type: string) => Promise<void>) => {
