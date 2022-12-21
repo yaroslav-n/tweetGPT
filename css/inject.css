@@ -29,6 +29,26 @@
     animation: error 0.5s linear 2;
 }
 
+.gptSelector {
+    cursor: pointer;
+    padding: 10px 10px;
+}
+
+.gptSelector:hover {
+    background-color: rgb(247, 249, 249);
+}
+
+.gptSelectorContainer {
+    position: absolute;
+    font-family: TwitterChirp, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: rgb(15, 20, 25);
+    font-size: 15px;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px;
+}
+
 @keyframes pulsate {
     from { opacity: 1; }
     50% { opacity: 0.3; }

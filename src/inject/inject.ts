@@ -10,7 +10,7 @@ const onToolBarAdded = (toolBarEl: Element) => {
     const inputEl = findClosestInput(toolBarEl);
     let prompt = '';
     if (inputEl) {     
-        addGPTButton(toolBarEl, async () => {
+        addGPTButton(toolBarEl, async (type: string) => {
             const replyToTweet = document.querySelector("article[data-testid=\"tweet\"][tabindex=\"-1\"]");
             if (!!replyToTweet) {
                 const textEl = replyToTweet.querySelector("div[data-testid=\"tweetText\"]");
@@ -20,11 +20,11 @@ const onToolBarAdded = (toolBarEl: Element) => {
                 }
 
                 const text = textEl.textContent;
-                prompt = replyPrompt(text);
+                prompt = replyPrompt(text, type);
             } else {
                 const trendingResponses = await TwitterClient.getTrending();
                 const trendingResponse = trendingResponses[Math.floor(Math.random() * trendingResponses.length)];
-                prompt = whatsHappeningPrompt(trendingResponse);
+                prompt = whatsHappeningPrompt(trendingResponse, type);
             }
 
             const requestId = inputEl.getAttribute("aria-activedescendant")!;

@@ -1,12 +1,27 @@
 <html>
+    <head>
+        <style>
+            .checkboxContainer {
+                display:flex;
+                flex-direction: row;
+                align-items: center; 
+                justify-content: flex-start;
+                margin-bottom:10px;
+            }
+        </style>
+    </head>
     <body style="width:300px">
-        <div style="display:flex;flex-direction: row;align-items: center; justify-content: flex-start;margin-bottom:10px;">
-            <input type="checkbox" id="signature" name="signature" />
-            <label for="signature">Add tweetGPT signature</label>
+        <div class="checkboxContainer">
+            <input type="checkbox" id="isAddSignature" name="isAddSignature"/>
+            <label for="isAddSignature">Add tweetGPT signature</label>
         </div>
-        <div style="display:flex;flex-direction: row;align-items: center; justify-content: flex-start;margin-bottom:10px;">
-            <input type="checkbox" id="realtime" name="realtime" />
-            <label for="realtime">Type tweet in real time (less stable)</label>
+        <div class="checkboxContainer">
+            <input type="checkbox" id="isRealtime" name="isRealtime"/>
+            <label for="isRealtime">Type tweet in real time (less stable)</label>
+        </div>
+        <div class="checkboxContainer">
+            <input type="checkbox" id="isRandomType" name="isRandomType" />
+            <label for="isRandomType">Use random tweet types</label>
         </div>
     </body>
     <script src="./popup.js"></script>
