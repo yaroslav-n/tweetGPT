@@ -27,6 +27,7 @@ When you press it, it will let you select a type of tweet to generate. The types
 <img src="./docs/options.png" height="300">
 
 Once selected, the extension will write a new tweet.
+
 For a reply, it will generate a tweet based on the original tweet. For a new tweet, it will write a tweet based on what's trending right now.
 
 <img src="./docs/reply.gif" height="379" width="609">
