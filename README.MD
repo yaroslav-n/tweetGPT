@@ -23,6 +23,7 @@ When you open a new tab with Twitter, you will see this icon under the tweet sec
 <img src="./docs/screenshot.png" height="120">
 
 When you press it, it will let you select a type of tweet to generate. The types include positive, negative, controversial, etc. 
+
 <img src="./docs/options.png" height="300">
 
 Once selected, the extension will write a new tweet.
