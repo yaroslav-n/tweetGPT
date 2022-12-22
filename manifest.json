@@ -11,12 +11,9 @@
       "scripting",
       "storage"
     ],
-    "host_permissions": [
-      "https://chat.openai.com/*"
-    ],
     "content_scripts": [
         {
-          "matches": ["https://*.twitter.com/*"],
+          "matches": ["https://twitter.com/*"],
           "css": ["css/inject.css"],
           "js": ["lib/inject.js"]
         },
