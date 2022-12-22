@@ -22,14 +22,16 @@ When you open a new tab with Twitter, you will see this icon under the tweet sec
 
 <img src="./docs/screenshot.png" height="120">
 
-When you press it, a new tweet will be generated. The extension will choose a random type of tweet: positive, negative, controversial, etc.
+When you press it, it will let you select a type of tweet to generate. The types include positive, negative, controversial, etc. 
+<img src="./docs/options.png" height="300">
 
+Once selected, the extension will write a new tweet.
 For a reply, it will generate a tweet based on the original tweet. For a new tweet, it will write a tweet based on what's trending right now.
 
 <img src="./docs/reply.gif" height="379" width="609">
 
 ## ⚠️ Warning
-TweetGPT generates positive, negative and controversial tweets _randomly_. It will sometimes generate controversial or even offensive tweets.
+Depending on the tweet type, TweetGPT can sometimes generate controversial or even offensive tweets.
 Remember, this is like an L2 autopilot - the driver is responsible for the outcome. Don't tweet what you disagree with, just re-generate the tweet instead.
 
 ## Feedback
