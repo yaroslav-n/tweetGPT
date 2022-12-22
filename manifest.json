@@ -34,7 +34,7 @@
     "web_accessible_resources": [
         {
             "resources": ["icons/button.svg", "icons/button_error.svg"],
-            "matches": ["https://*.twitter.com/*"]
+            "matches": ["https://twitter.com/*"]
         }
     ]
   }
