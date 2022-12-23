@@ -7,8 +7,6 @@
     "version": "1.0",
     "description": "Writes tweets with chatGPT",
     "permissions": [
-      "activeTab",
-      "scripting",
       "storage"
     ],
     "content_scripts": [
