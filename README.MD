@@ -8,6 +8,9 @@ To use this extension, will you need:
 * OpenAI account
 * Chrome browser
 
+## Installation from Chrome Web Store
+1. Open the [extension page](https://chrome.google.com/webstore/detail/tweetgpt/lkjblpoingopdeaofcaapmeoojjjnhnc) in Chrome Web Store.
+2. Press "Add to Chrome" button
 ## Manual installation
 1. Clone this repo to your machine
 2. Open [chrome://extensions/](chrome://extensions/) in your browser

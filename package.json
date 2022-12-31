@@ -1,6 +1,6 @@
 {
   "name": "twitter-gpt",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A chrome extension that writes tweets with chatGPT",
   "main": "lib/background.js",
   "author": "Yaroslav https://twitter.com/512x512",

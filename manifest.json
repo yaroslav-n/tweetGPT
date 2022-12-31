@@ -4,7 +4,7 @@
       "default_popup": "./src/popup/popup.html"
     },
     "manifest_version": 3,
-    "version": "1.0",
+    "version": "1.0.2",
     "description": "Writes tweets with chatGPT",
     "permissions": [
       "storage"
