@@ -28,7 +28,6 @@ export const addGPTButton = async (toolbarEl: Element, onClick: (type: string) =
 
 const addGPTButtonRandom = (toolbarEl: Element, onClick: (type: string) => Promise<void>) => {
     const buttonContainer = toolbarEl.children[0]; // doesn't have it's own readable class / testId
-    
     // create icon component
     const gptIcon = document.createElement('img');
     gptIcon.classList.add("gptIcon");

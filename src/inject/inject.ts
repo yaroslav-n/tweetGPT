@@ -9,6 +9,7 @@ import { replyPrompt, whatsHappeningPrompt } from "../background/chat_gpt_client
 const onToolBarAdded = (toolBarEl: Element) => {
     const inputEl = findClosestInput(toolBarEl);
     let prompt = '';
+    console.log('>>> toolBarEl', toolBarEl);
     if (inputEl) {     
         addGPTButton(toolBarEl, async (type: string) => {
             (toolBarEl as HTMLDivElement).click();
@@ -43,7 +44,7 @@ const onToolBarRemoved = (toolBarEl: Element) => {}
 
 
 // waiting for background events
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message) => {
     if (!message.type) {
         return;
     }
