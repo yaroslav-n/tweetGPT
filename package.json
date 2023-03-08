@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@microsoft/fetch-event-source": "^2.0.1",
+    "firebase": "^9.17.2",
     "typescript": "^4.9.3",
     "uuid": "^9.0.0"
   },

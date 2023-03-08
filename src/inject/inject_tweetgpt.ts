@@ -1,34 +1,34 @@
-alert('hi');
+import { initializeApp } from "firebase/app";
+import {
+  getAuth,
+  TwitterAuthProvider,
+  signInWithRedirect,
+  onAuthStateChanged,
+} from "firebase/auth";
 
-// type Message = {
-//     type: 'close_openai_window';
-// }
+const firebaseConfig = {
+  apiKey: "AIzaSyAmsKz-Nfxxov1AR8qKUas6WLWhkLgAY8g",
+  authDomain: "tweetgpt.firebaseapp.com",
+  projectId: "tweetgpt",
+  storageBucket: "tweetgpt.appspot.com",
+  messagingSenderId: "140195492308",
+  appId: "1:140195492308:web:ffdaa053c647927d3fa641",
+};
 
-// const el = document.querySelector("script[id=\"__NEXT_DATA__\"]");
+window.addEventListener("load", () => {
+  document.getElementById("no-extension")!.style.display = "none";
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  document.getElementById("preauth")!.style.display = "flex";
 
-// if (el && el.textContent) {
-//     const text = el.textContent;
-
-//     let json: Record<any, any> = {};
-//     try {
-//         json = JSON.parse(text);
-//     } catch (_) {}
-
-//     const token = json.props?.pageProps?.accessToken;
-//     if (token) {
-//         chrome.runtime.sendMessage({type: 'new_openai_token', token});
-//     }
-// }
-
-
-// chrome.runtime.onMessage.addListener((message: Message, sender, sendResponse) => {
-//     if (!message.type) {
-//         return;
-//     }
-
-//     switch(message.type) {
-//         case 'close_openai_window':
-//             window.setTimeout(() => window.close(), 1);
-//             break;
-//     }
-// });
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const token = (user as any).accessToken; // incorrect typings
+      await chrome.runtime.sendMessage({type: "new_firebase_token", token});
+      document.getElementById("preauth")!.style.display = "none";
+      document.getElementById("afterauth")!.style.display = "flex";
+    } else {
+      await signInWithRedirect(getAuth(app), new TwitterAuthProvider());
+    }
+  });
+});

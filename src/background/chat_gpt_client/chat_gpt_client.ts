@@ -119,6 +119,8 @@ export class ChatGPTClient {
     }
 
     updateToken(token: string) {
+        // exchange token
+        console.log('>>> updateToken', token);
         this.gptToken = token;
         chrome.storage.local.set({"gpt_token": token});
         if (this.waitForTokenCallback) {

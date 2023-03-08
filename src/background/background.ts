@@ -10,7 +10,7 @@ chrome.scripting.registerContentScripts([
     },
     {
         id: `tweetgpt_main_context_inject_${Math.random()}`,
-        world: "MAIN",
+        world: "ISOLATED",
         matches: ["https://tweetgpt.web.app/*"],
         js: ["lib/inject_tweetgpt.js"],
         runAt: "document_start",
@@ -24,7 +24,7 @@ type Message = {
     prompt: string;
     requestId: number;
 } | {
-    type: 'new_openai_token';
+    type: 'new_firebase_token';
     token: string;
 }
 
@@ -60,10 +60,12 @@ chrome.runtime.onMessage.addListener((message: Message, sender, sendResponse) =>
                 onError,
             );
             break;
-        case 'new_openai_token':
+        case 'new_firebase_token':
             const token = message.token;
             gptChat.updateToken(token);
-            chrome.tabs.sendMessage(sender.tab!.id!, {type: 'close_openai_window'})
+            if (sender.tab?.id) {
+                chrome.tabs.remove(sender.tab?.id);
+            }
             break;
     }
 
