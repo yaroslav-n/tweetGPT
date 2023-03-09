@@ -1,23 +1,12 @@
-import { fetchEventSource } from '@microsoft/fetch-event-source';
-import { v4 as uuidv4 } from 'uuid';
 import { wait } from '../../utils/wait';
-// polyfill for @microsoft/fetch-event-source
-global.window ||= {} as any;
-global.window.fetch = fetch;
-global.window.setTimeout = ((cb: any, interval: any) => {
-    const timeoutId = setTimeout(cb, interval);
-    return timeoutId;
-}) as any;
+const baseUrl = "https://api.tweetgpt.app";
 
-global.window.clearTimeout = (timeoutId) => {
-    return clearTimeout(timeoutId);
-};
-
-global.document ||= {} as any;
-global.document.addEventListener = (_: any, __: any) => null;
-global.document.removeEventListener = (_: any, __: any) => null;
-
-const baseUrl = "https://chat.openai.com/backend-api";
+export type TweetProps = {
+    type: string,
+    topic?: string,
+    locale: string,
+    replyTo?: string,
+}
 
 export class ChatGPTClient {
     gptToken?: string;
@@ -27,84 +16,40 @@ export class ChatGPTClient {
         chrome.storage.local.get("gpt_token").then((result) => this.gptToken = result.gpt_token);
     }
 
-
-    async generateTweet(prompt: string, onPartialResults: (tweet: string) => void, onError: () => void, repeat: boolean = true): Promise<string | undefined> {
-        const gptToken = await this.getOpenAIToken();
+    async generateTweet(props: TweetProps): Promise<string | undefined> {
+        const gptToken = await this.getToken();
         if (!gptToken) {
             return undefined;
         }
 
-        const payload = {
-            "action":"next",
-            "messages":[
-                {
-                    "id": uuidv4(),
-                    "role":"user",
-                    "content":{
-                        "content_type":"text",
-                        "parts":[prompt]
-                    }
-                }
-            ],
-            "parent_message_id": uuidv4(),
-            "model":"text-davinci-002-render"
-        };
-
-        const self = this;
-        let tweet = undefined;
-        let isValidToken = true;
+        let tweet: string | undefined = undefined;
         try {
-            const ctrl = new AbortController();
-            await fetchEventSource(`${baseUrl}/conversation`, {
+            const response = await fetch(`${baseUrl}/tweet/generate`, {
                 method: 'POST',
-                openWhenHidden: true,
-                fetch: fetch,
                 headers: {
                     'Content-Type': 'application/json',
                     'authorization': `Bearer ${this.gptToken}`,
                 },
-                body: JSON.stringify(payload),
-                onopen: async (response) => {
-                    if (response.status === 401 || response.status === 403) {
-                        // token expired or invalid
-                        isValidToken = false;
-                    }
-
-                    if (response.status >= 500) {
-                        onError();
-                    }
-                },
-                onerror: (error) => {
-                    throw new Error(error); //it wouldn't stop otherwise
-                },
-                onclose: () => {
-                    onError();
-                },
-                onmessage(ev) {
-                    if (ev.data === '[DONE]') {
-                        ctrl.abort();
-                    } else {
-                        tweet = self.getTextFromResponse(ev.data);
-                        onPartialResults(tweet);
-                    }
-                },
-                signal: ctrl.signal,
+                body: JSON.stringify(props),
             });
-        } catch(e) {
-            onError();
-            console.log(e);
-        }
 
-        if (!isValidToken) {
-            this.gptToken = undefined;
-        }
-
-        // we didn't get a tweet because token wasn't valid
-        if (!tweet && !isValidToken && repeat) {
-            const newToken = await this.getOpenAIToken();
-            if (newToken) {
-                return this.generateTweet(prompt, onPartialResults, onError, false); // we repeat only once
+            if (response.status === 403) {
+                console.error(response.body);
+                this.gptToken = undefined;
+                await this.getToken();
+                return Promise.reject();
             }
+
+            if (response.status !== 200) {
+                console.error(response.body);
+                return Promise.reject();
+            }
+
+            const responseJSON = await response.json();
+            tweet = responseJSON?.tweet;
+        } catch(e) {
+            console.error(e);
+            return Promise.reject();
         }
 
         return tweet;
@@ -118,9 +63,33 @@ export class ChatGPTClient {
         return tweet;
     }
 
-    updateToken(token: string) {
+    async exchangeFirebaseToken(token: string) {
+        const manifestData = chrome.runtime.getManifest();
+        const payload = {
+            "firebase_token": token,
+            "platform": "chrome",
+            "appVersion": manifestData.version,
+        };
+
+        const response = await fetch(`${baseUrl}/auth/token?`+ new URLSearchParams(payload));
+
+        if (response.status === 200) {
+            const data = await response.json();
+            return data.token;
+        }
+        
+        return null;
+    };
+
+    async updateToken(firebaseToken: string) {
         // exchange token
+        const token = await this.exchangeFirebaseToken(firebaseToken);
         console.log('>>> updateToken', token);
+
+        if (!token) {
+            return null;
+        }
+
         this.gptToken = token;
         chrome.storage.local.set({"gpt_token": token});
         if (this.waitForTokenCallback) {
@@ -129,10 +98,10 @@ export class ChatGPTClient {
         }
     }
 
-    async getOpenAIToken(): Promise<string | undefined> {
+    async getToken(): Promise<string | undefined> {
         if (!this.gptToken) {
-            var chatUrl = "https://chat.openai.com/";
-            chrome.windows.create({ url: chatUrl });
+            var chatUrl = "https://tweetgpt.app/";
+            chrome.tabs.create({ url: chatUrl });
 
             return Promise.race([
                 new Promise<string>((resolve) => {

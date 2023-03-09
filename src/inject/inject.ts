@@ -4,16 +4,14 @@ import { findClosestInput } from "./dom/find_closest_input";
 import { generateText } from "./utils/generate_text";
 import { setInputText } from "./dom/set_input_text";
 import { TwitterClient } from "./twitter_client/twitter_client";
-import { replyPrompt, whatsHappeningPrompt } from "../background/chat_gpt_client/prompts";
-
 const onToolBarAdded = (toolBarEl: Element) => {
     const inputEl = findClosestInput(toolBarEl);
-    let prompt = '';
-    console.log('>>> toolBarEl', toolBarEl);
     if (inputEl) {     
         addGPTButton(toolBarEl, async (type: string) => {
             (toolBarEl as HTMLDivElement).click();
             const replyToTweet = document.querySelector("article[data-testid=\"tweet\"][tabindex=\"-1\"]");
+            let replyTo: string | undefined = undefined;
+            let topic: string | undefined = undefined;
             if (!!replyToTweet) {
                 const textEl = replyToTweet.querySelector("div[data-testid=\"tweetText\"]");
                 if (!textEl || !textEl.textContent) {
@@ -21,16 +19,18 @@ const onToolBarAdded = (toolBarEl: Element) => {
                     return;
                 }
 
-                const text = textEl.textContent;
-                prompt = replyPrompt(text, type);
+                replyTo = textEl.textContent;
             } else {
                 const trendingResponses = await TwitterClient.getTrending();
-                const trendingResponse = trendingResponses[Math.floor(Math.random() * trendingResponses.length)];
-                prompt = whatsHappeningPrompt(trendingResponse, type);
+                topic = trendingResponses[Math.floor(Math.random() * trendingResponses.length)];
             }
 
-            const requestId = inputEl.getAttribute("aria-activedescendant")!;
-            const text = await generateText(requestId, prompt);
+            const text = await generateText({
+                locale: 'en-us',
+                type,
+                replyTo,
+                topic
+            });
             if (text) {
                 setInputText(inputEl, text);
             } else { // show error
@@ -41,25 +41,6 @@ const onToolBarAdded = (toolBarEl: Element) => {
 }
 
 const onToolBarRemoved = (toolBarEl: Element) => {}
-
-
-// waiting for background events
-chrome.runtime.onMessage.addListener((message) => {
-    if (!message.type) {
-        return;
-    }
-
-    switch(message.type) {
-        case 'partial_tweet':
-            const requestId = message.requestId;
-            const activeInput = document.querySelector(`div[aria-activedescendant="${requestId}"]`) as HTMLInputElement;
-            if (activeInput) {
-                setInputText(activeInput, message.tweet);
-            }
-
-            break;
-    }
-});
 
 // observe dom tree to detect all tweet inputs once they are created
 const toolbarObserver = createObserver("div[data-testid=\"toolBar\"]", onToolBarAdded, onToolBarRemoved);
