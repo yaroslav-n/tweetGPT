@@ -10,6 +10,13 @@ chrome.scripting.registerContentScripts([
     },
     {
         id: `tweetgpt_main_context_inject_${Math.random()}`,
+        world: "MAIN",
+        matches: ["https://tweetgpt.app/*"],
+        js: ["lib/inject_tweetgpt_main.js"],
+        runAt: "document_start",
+    },
+    {
+        id: `tweetgpt_isolated_context_inject_${Math.random()}`,
         world: "ISOLATED",
         matches: ["https://tweetgpt.app/*"],
         js: ["lib/inject_tweetgpt.js"],

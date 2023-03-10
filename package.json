@@ -12,7 +12,6 @@
     "package": "yarn build && zip -r -X extension.zip *"
   },
   "dependencies": {
-    "firebase": "^9.17.2",
     "typescript": "^4.9.3"
   },
   "devDependencies": {
