@@ -5,7 +5,7 @@ import { generateText } from "./utils/generate_text";
 import { setInputText } from "./dom/set_input_text";
 import { TwitterClient } from "./twitter_client/twitter_client";
 const onToolBarAdded = (toolBarEl: Element) => {
-    const inputEl = findClosestInput(toolBarEl);
+    let inputEl = findClosestInput(toolBarEl);
     if (inputEl) {     
         addGPTButton(toolBarEl, async (type: string) => {
             (toolBarEl as HTMLDivElement).click();
@@ -32,7 +32,10 @@ const onToolBarAdded = (toolBarEl: Element) => {
                 topic
             });
             if (text) {
-                setInputText(inputEl, text);
+                inputEl = findClosestInput(toolBarEl);
+                if (inputEl) {
+                    setInputText(inputEl, text);
+                }
             } else { // show error
                 showErrorButton(toolBarEl);
             }
