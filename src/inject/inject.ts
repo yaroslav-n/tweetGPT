@@ -4,6 +4,7 @@ import { findClosestInput } from "./dom/find_closest_input";
 import { generateText } from "./utils/generate_text";
 import { setInputText } from "./dom/set_input_text";
 import { TwitterClient } from "./twitter_client/twitter_client";
+import { defaultLocale } from "../background/chat_gpt_client/locales";
 const onToolBarAdded = (toolBarEl: Element) => {
     let inputEl = findClosestInput(toolBarEl);
     if (inputEl) {     
@@ -26,7 +27,7 @@ const onToolBarAdded = (toolBarEl: Element) => {
             }
 
             const text = await generateText({
-                locale: 'en-us',
+                locale: (await chrome.storage.local.get('language')).language ?? defaultLocale,
                 type,
                 replyTo,
                 topic

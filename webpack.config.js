@@ -8,6 +8,7 @@ module.exports = {
     inject_tweetgpt_main: './src/inject/inject_tweetgpt_main.ts',
     inject_tweetgpt: './src/inject/inject_tweetgpt.ts',
     background: "./src/background/background.ts",
+    popup: './src/popup/popup.ts',
   },
   optimization: {
     minimize: false

@@ -1,5 +1,6 @@
 <html>
     <head>
+        <meta charset="UTF-8">
         <style>
             .checkboxContainer {
                 display:flex;
@@ -12,6 +13,11 @@
     </head>
     <body style="width:300px">
         <div class="checkboxContainer">
+            <label for="language">Language&nbsp;&nbsp;&nbsp;</label>
+            <select name="language" id="language">
+            </select>
+        </div>
+        <div class="checkboxContainer">
             <input type="checkbox" id="isAddSignature" name="isAddSignature"/>
             <label for="isAddSignature">Add tweetGPT signature</label>
         </div>
@@ -20,5 +26,5 @@
             <label for="isRandomType">Use random tweet types</label>
         </div>
     </body>
-    <script src="./popup.js"></script>
+    <script src="../../lib/popup.js"></script>
 </html>
