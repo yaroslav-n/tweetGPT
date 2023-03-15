@@ -187,6 +187,34 @@ export const locales: Record<string, string[]> = {
         "Српски / Srpski",
         "Serbian"
     ],
+    "sv-SE": [
+        "Svenska",
+        "Swedish"
+    ],
+    "th-TH": [
+        "ไทย",
+        "Thai"
+    ],
+    "tr-TR": [
+        "Türkçe",
+        "Turkish"
+    ],
+    "uk-UA": [
+        "Українська",
+        "Ukrainian"
+    ],
+    "vi-VN": [
+        "Tiếng Việt",
+        "Vietnamese"
+    ],
+    "zh-CN": [
+        "中文 (中国大陆)",
+        "Chinese (PRC)"
+    ],
+    "zh-TW": [
+        "中文 (台灣)",
+        "Chinese (Taiwan)"
+    ]
 };
 
 export const defaultLocale = 'en-US';
