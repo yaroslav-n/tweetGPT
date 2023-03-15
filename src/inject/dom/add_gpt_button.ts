@@ -15,7 +15,7 @@ const tweetTypes: Array<{ emoji: string; type: string; }> = [
     {emoji: '🙄', type: 'passive aggressive'}
 ];
 
-export const addGPTButton = async (toolbarEl: Element, onClick: (type: string) => Promise<void>) => {
+export const addGPTButton = async (toolbarEl: Element, onClick: (type: string, topic?: string) => Promise<void>) => {
     const state = await chrome.storage.local.get('isRandomType');
     const isRandomType = state.isRandomType ?? false;
 
@@ -26,7 +26,26 @@ export const addGPTButton = async (toolbarEl: Element, onClick: (type: string) =
     }
 }
 
-const addGPTButtonRandom = (toolbarEl: Element, onClick: (type: string) => Promise<void>) => {
+const maybeReturnTopic = async (): Promise<string | undefined> => {
+    const replyState = await chrome.storage.local.get('isAddTopicForReplies');
+    const isAddTopicForReplies = replyState.isAddTopicForReplies ?? false;
+
+    const lastState = await chrome.storage.local.get('lastTopic');
+    const lastTopic = lastState.lastTopic ?? '';
+
+    const replyToTweet = document.querySelector("article[data-testid=\"tweet\"][tabindex=\"-1\"]");
+
+    let topic: string | undefined;
+
+    if (!replyToTweet || isAddTopicForReplies) {
+        topic = window.prompt("What do you want to tweet about?", lastTopic) || 'Twitter';
+        await chrome.storage.local.set({'lastTopic': topic});
+    }
+
+    return topic;
+}
+
+const addGPTButtonRandom = (toolbarEl: Element, onClick: (type: string, topic?: string) => Promise<void>) => {
     const buttonContainer = toolbarEl.children[0]; // doesn't have it's own readable class / testId
     // create icon component
     const gptIcon = document.createElement('img');
@@ -40,7 +59,8 @@ const addGPTButtonRandom = (toolbarEl: Element, onClick: (type: string) => Promi
     gptIconWrapper.onclick = async () => {
         gptIconWrapper.classList.add("loading");
         const typeObj = tweetTypes[Math.floor(Math.random() * tweetTypes.length)];
-        await onClick(typeObj.type);
+        const topic = await maybeReturnTopic();
+        await onClick(typeObj.type, topic);
         gptIconWrapper.classList.remove("loading");
     }
 
@@ -48,7 +68,7 @@ const addGPTButtonRandom = (toolbarEl: Element, onClick: (type: string) => Promi
     buttonContainer.appendChild(gptIconWrapper);
 }
 
-const addGPTButtonWithType = (toolbarEl: Element, onClick: (type: string) => Promise<void>) => {
+const addGPTButtonWithType = (toolbarEl: Element, onClick: (type: string, topic?: string) => Promise<void>) => {
     const doc = new DOMParser().parseFromString(`
         <div class="gptIconWrapper" id="gptButton">
             <img class="gptIcon" src="${gptIconSrc}" />
@@ -62,6 +82,7 @@ const addGPTButtonWithType = (toolbarEl: Element, onClick: (type: string) => Pro
     buttonContainer.appendChild(iconWrap);
 
     iconWrap.onclick = async () => {
+        const topic = await maybeReturnTopic();
         const bodyRect = document.body.getBoundingClientRect();
         const elemRect = iconWrap.getBoundingClientRect();
 
@@ -78,7 +99,7 @@ const addGPTButtonWithType = (toolbarEl: Element, onClick: (type: string) => Pro
             }
 
             iconWrap.classList.add("loading");
-            await onClick(type);
+            await onClick(type, topic);
             iconWrap.classList.remove("loading");
         });
 

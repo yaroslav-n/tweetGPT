@@ -3,16 +3,14 @@ import { createObserver } from "./dom/create_observer";
 import { findClosestInput } from "./dom/find_closest_input";
 import { generateText } from "./utils/generate_text";
 import { setInputText } from "./dom/set_input_text";
-import { TwitterClient } from "./twitter_client/twitter_client";
 import { defaultLocale } from "../background/chat_gpt_client/locales";
 const onToolBarAdded = (toolBarEl: Element) => {
     let inputEl = findClosestInput(toolBarEl);
     if (inputEl) {     
-        addGPTButton(toolBarEl, async (type: string) => {
+        addGPTButton(toolBarEl, async (type: string, topic?: string) => {
             (toolBarEl as HTMLDivElement).click();
             const replyToTweet = document.querySelector("article[data-testid=\"tweet\"][tabindex=\"-1\"]");
             let replyTo: string | undefined = undefined;
-            let topic: string | undefined = undefined;
             if (!!replyToTweet) {
                 const textEl = replyToTweet.querySelector("div[data-testid=\"tweetText\"]");
                 if (!textEl || !textEl.textContent) {
@@ -21,9 +19,6 @@ const onToolBarAdded = (toolBarEl: Element) => {
                 }
 
                 replyTo = textEl.textContent;
-            } else {
-                const trendingResponses = await TwitterClient.getTrending();
-                topic = trendingResponses[Math.floor(Math.random() * trendingResponses.length)];
             }
 
             const text = await generateText({
