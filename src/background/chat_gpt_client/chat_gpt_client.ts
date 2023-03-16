@@ -16,7 +16,7 @@ export class ChatGPTClient {
         chrome.storage.local.get("gpt_token").then((result) => this.gptToken = result.gpt_token);
     }
 
-    async generateTweet(props: TweetProps): Promise<string | undefined> {
+    async generateTweet(props: TweetProps, repeat: boolean = true): Promise<string | undefined> {
         const gptToken = await this.getToken();
         if (!gptToken) {
             return undefined;
@@ -36,7 +36,10 @@ export class ChatGPTClient {
             if (response.status === 403) {
                 console.error(response.body);
                 this.gptToken = undefined;
-                await this.getToken();
+                const newToken = await this.getToken();
+                if (newToken && repeat) { // repeat only once
+                    return this.generateTweet(props, false);
+                }
                 return Promise.reject();
             }
 
@@ -84,7 +87,6 @@ export class ChatGPTClient {
     async updateToken(firebaseToken: string) {
         // exchange token
         const token = await this.exchangeFirebaseToken(firebaseToken);
-        console.log('>>> updateToken', token);
 
         if (!token) {
             return null;
@@ -101,13 +103,13 @@ export class ChatGPTClient {
     async getToken(): Promise<string | undefined> {
         if (!this.gptToken) {
             var chatUrl = "https://tweetgpt.app/";
-            chrome.tabs.create({ url: chatUrl });
+            chrome.windows.create({ url: chatUrl });
 
             return Promise.race([
                 new Promise<string>((resolve) => {
                     this.waitForTokenCallback = resolve;
                 }),
-                wait(10000).then(() => { // 15s timeout for user to login
+                wait(15000).then(() => { // 15s timeout for user to login
                     this.waitForTokenCallback = undefined;
                     return undefined;
                 })
