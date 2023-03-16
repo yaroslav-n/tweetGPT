@@ -1,13 +1,36 @@
-import { ChatGPTClient } from "./chat_gpt_client/chat_gpt_client";
+import { ChatGPTClient, TweetProps } from "./chat_gpt_client/chat_gpt_client";
+
+chrome.scripting.registerContentScripts([
+    {
+        id: `main_context_inject_${Math.random()}`,
+        world: "ISOLATED",
+        matches: ["https://twitter.com/*"],
+        js: ["lib/inject.js"],
+        css: ["css/inject.css"],
+    },
+    {
+        id: `tweetgpt_main_context_inject_${Math.random()}`,
+        world: "MAIN",
+        matches: ["https://tweetgpt.app/*"],
+        js: ["lib/inject_tweetgpt_main.js"],
+        runAt: "document_start",
+    },
+    {
+        id: `tweetgpt_isolated_context_inject_${Math.random()}`,
+        world: "ISOLATED",
+        matches: ["https://tweetgpt.app/*"],
+        js: ["lib/inject_tweetgpt.js"],
+        runAt: "document_start",
+    },
+]);
 
 const gptChat = new ChatGPTClient();
 
 type Message = {
     type: 'generate_tweet';
-    prompt: string;
-    requestId: number;
+    props: TweetProps;
 } | {
-    type: 'new_openai_token';
+    type: 'new_firebase_token';
     token: string;
 }
 
@@ -18,15 +41,7 @@ chrome.runtime.onMessage.addListener((message: Message, sender, sendResponse) =>
 
     switch(message.type) {
         case 'generate_tweet':
-            const requestId = message.requestId;
-            const onPartialResults = async (tweet: string) => {
-                const { isRealtime } = await chrome.storage.local.get('isRealtime');
-                if (isRealtime) {
-                    chrome.tabs.sendMessage(sender.tab!.id!, {type: 'partial_tweet', tweet, requestId})
-                }
-            };
-            const onError = (repeat?: boolean) => sendResponse(undefined);
-            gptChat.generateTweet(message.prompt, onPartialResults, onError).then(
+            gptChat.generateTweet(message.props).then(
                 async (text) => {
                     if (!text) {
                         return sendResponse(undefined);
@@ -40,13 +55,15 @@ chrome.runtime.onMessage.addListener((message: Message, sender, sendResponse) =>
                     }
                     sendResponse(finalText);
                 }, 
-                onError,
+                () => sendResponse(undefined)
             );
             break;
-        case 'new_openai_token':
+        case 'new_firebase_token':
             const token = message.token;
             gptChat.updateToken(token);
-            chrome.tabs.sendMessage(sender.tab!.id!, {type: 'close_openai_window'})
+            if (sender.tab?.id) {
+                chrome.tabs.remove(sender.tab?.id);
+            }
             break;
     }
 
