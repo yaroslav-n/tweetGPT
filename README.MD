@@ -5,13 +5,12 @@
 ## Requirements
 To use this extension, will you need:
 * Twitter account
-* OpenAI account
 * Chrome browser
 
-## Installation from Chrome Web Store
+## Installation from Chrome Web Store (v1)
 1. Open the [extension page](https://chrome.google.com/webstore/detail/tweetgpt/lkjblpoingopdeaofcaapmeoojjjnhnc) in Chrome Web Store.
 2. Press "Add to Chrome" button
-## Manual installation
+## Manual installation (v2)
 1. Clone this repo to your machine
 2. Open [chrome://extensions/](chrome://extensions/) in your browser
 3. Check the box for Developer mode in the top right
@@ -31,7 +30,7 @@ When you press it, it will let you select a type of tweet to generate. The types
 
 Once selected, the extension will write a new tweet.
 
-For a reply, it will generate a tweet based on the original tweet. For a new tweet, it will write a tweet based on what's trending right now.
+For a reply, it will generate a tweet based on the original tweet. For a new tweet, it will ask for a topic you want to write tweet about.
 
 <img src="./docs/reply.gif" height="379" width="609">
 
