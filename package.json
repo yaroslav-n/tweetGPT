@@ -9,7 +9,7 @@
     "build": "yarn clean && webpack",
     "watch": "yarn clean && webpack -w",
     "clean": "rm -rf ./lib/*",
-    "package": "yarn build && zip -r -X extension.zip *"
+    "package": "rm -f ./extension.zip && yarn build && zip -r -X extension.zip *"
   },
   "dependencies": {
     "typescript": "^4.9.3"
