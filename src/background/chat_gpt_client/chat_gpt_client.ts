@@ -19,6 +19,9 @@ export class ChatGPTClient {
     async generateTweet(props: TweetProps, repeat: boolean = true): Promise<string | undefined> {
         const gptToken = await this.getToken();
         if (!gptToken) {
+            if (repeat) { // repeat only once
+                return this.generateTweet(props, false);
+            }
             return undefined;
         }
 
@@ -35,6 +38,7 @@ export class ChatGPTClient {
 
             if (response.status === 403) {
                 console.error(response.body);
+                await chrome.storage.local.remove("gpt_token")
                 this.gptToken = undefined;
                 const newToken = await this.getToken();
                 if (newToken && repeat) { // repeat only once
@@ -105,11 +109,11 @@ export class ChatGPTClient {
             var chatUrl = "https://tweetgpt.app/";
             chrome.windows.create({ url: chatUrl });
 
-            return Promise.race([
+            await Promise.race([
                 new Promise<string>((resolve) => {
                     this.waitForTokenCallback = resolve;
                 }),
-                wait(15000).then(() => { // 15s timeout for user to login
+                wait(20000).then(() => { // 20s timeout for user to login
                     this.waitForTokenCallback = undefined;
                     return undefined;
                 })
@@ -118,4 +122,4 @@ export class ChatGPTClient {
 
         return this.gptToken;
     }
-}   
+}
