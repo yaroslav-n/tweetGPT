@@ -1,5 +1,6 @@
 import { wait } from '../../utils/wait';
 const baseUrl = "https://api.tweetgpt.app";
+const GPT_TOKEN_NAME = 'gpt_token';
 
 export type TweetProps = {
     type: string,
@@ -9,13 +10,7 @@ export type TweetProps = {
 }
 
 export class ChatGPTClient {
-    gptToken?: string;
     waitForTokenCallback: ((newGptToken: string) => void) | undefined;
-
-    constructor() {
-        chrome.storage.local.get("gpt_token").then((result) => this.gptToken = result.gpt_token);
-    }
-
     async generateTweet(props: TweetProps, repeat: boolean = true): Promise<string | undefined> {
         const gptToken = await this.getToken();
         if (!gptToken) {
@@ -31,15 +26,14 @@ export class ChatGPTClient {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'authorization': `Bearer ${this.gptToken}`,
+                    'authorization': `Bearer ${gptToken}`,
                 },
                 body: JSON.stringify(props),
             });
 
             if (response.status === 403) {
                 console.error(response.body);
-                await chrome.storage.local.remove("gpt_token")
-                this.gptToken = undefined;
+                await chrome.storage.local.remove(GPT_TOKEN_NAME)
                 const newToken = await this.getToken();
                 if (newToken && repeat) { // repeat only once
                     return this.generateTweet(props, false);
@@ -96,8 +90,7 @@ export class ChatGPTClient {
             return null;
         }
 
-        this.gptToken = token;
-        chrome.storage.local.set({"gpt_token": token});
+        chrome.storage.local.set({[GPT_TOKEN_NAME]: token});
         if (this.waitForTokenCallback) {
             this.waitForTokenCallback(token);
             this.waitForTokenCallback = undefined;
@@ -105,11 +98,12 @@ export class ChatGPTClient {
     }
 
     async getToken(): Promise<string | undefined> {
-        if (!this.gptToken) {
+        const result = (await chrome.storage.local.get(GPT_TOKEN_NAME)) || {};
+        if (!result[GPT_TOKEN_NAME]) {
             var chatUrl = "https://tweetgpt.app/";
             chrome.windows.create({ url: chatUrl });
 
-            await Promise.race([
+            return await Promise.race([
                 new Promise<string>((resolve) => {
                     this.waitForTokenCallback = resolve;
                 }),
@@ -120,6 +114,6 @@ export class ChatGPTClient {
             ]);
         }
 
-        return this.gptToken;
+        return result[GPT_TOKEN_NAME];
     }
 }

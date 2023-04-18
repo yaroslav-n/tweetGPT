@@ -203,6 +203,10 @@ export const locales: Record<string, string[]> = {
         "Українська",
         "Ukrainian"
     ],
+    "ur-PK": [
+        "اردو",
+        "Urdu"
+    ],
     "vi-VN": [
         "Tiếng Việt",
         "Vietnamese"
