@@ -39,6 +39,8 @@ chrome.runtime.onMessage.addListener((message: Message, sender, sendResponse) =>
         return;
     }
 
+    console.log('>>> message', message);
+
     switch(message.type) {
         case 'generate_tweet':
             gptChat.generateTweet(message.props).then(
