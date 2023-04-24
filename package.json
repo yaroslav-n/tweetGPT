@@ -12,11 +12,16 @@
     "package": "rm -f ./extension.zip && yarn build && zip -r -X extension.zip *"
   },
   "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "styled-components": "^5.3.10",
     "typescript": "^4.9.3"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.203",
     "@types/node": "^18.11.11",
+    "@types/react": "^18.0.38",
+    "@types/react-dom": "^18.0.11",
     "ts-loader": "^9.4.2",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1"

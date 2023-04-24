@@ -3,6 +3,7 @@
         "target": "ESNext",
         "moduleResolution": "node",
         "types": ["node", "chrome"],
+        "jsx": "react",
         "allowJs": false,
         "removeComments": false,
         "strict": true,
