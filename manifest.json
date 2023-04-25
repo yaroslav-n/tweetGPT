@@ -5,14 +5,15 @@
     "description": "Helps writing tweets using chatGPT",
     "permissions": [
       "storage",
-      "scripting"
+      "scripting",
+      "notifications"
     ],
     "host_permissions": [
       "https://twitter.com/",
-      "https://tweetgpt.app/"
+      "https://api.openai.com/"
     ],
     "externally_connectable": {
-      "matches": ["https://twitter.com/*", "https://tweetgpt.app/*"]
+      "matches": ["https://twitter.com/*"]
     },
     "icons": {
         "16": "icons/16.png",
@@ -25,7 +26,7 @@
     },
     "web_accessible_resources": [
         {
-            "resources": ["icons/button.svg", "icons/button_error.svg"],
+            "resources": ["icons/button.svg", "icons/button_error.svg", "assets/settings.html"],
             "matches": ["https://twitter.com/*"]
         }
     ]

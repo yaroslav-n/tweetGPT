@@ -77,7 +77,7 @@ export const SettingsScreen = () => {
                     <Space height={3} />
                     <Subtitle>Required. You can find your Secret API key in your <a href="https://platform.openai.com/account/api-keys">OpenAI User settings</a>.</Subtitle>
                     <Space height={10} />
-                    <TextInput type="text" placeholder='Put your secret API token here' value={openAIToken} onChange={(e) => changeOpenAIToken(e.target.value)}/>
+                    <TextInput type="password" placeholder='Put your secret API token here' value={openAIToken} onChange={(e) => changeOpenAIToken(e.target.value)}/>
                 </SettingsBlock>
                 <SettingsBlock>
                     <H2>Text Generation</H2>
