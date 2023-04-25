@@ -16,14 +16,7 @@ const tweetTypes: Array<{ emoji: string; type: string; }> = [
 ];
 
 export const addGPTButton = async (toolbarEl: Element, onClick: (type: string, topic?: string) => Promise<void>) => {
-    const state = await chrome.storage.local.get('isRandomType');
-    const isRandomType = state.isRandomType ?? false;
-
-    if (isRandomType) {
-        addGPTButtonRandom(toolbarEl, onClick);
-    } else {
-        addGPTButtonWithType(toolbarEl, onClick);
-    }
+    addGPTButtonWithType(toolbarEl, onClick);
 }
 
 const maybeReturnTopic = async (): Promise<string | undefined> => {
@@ -43,29 +36,6 @@ const maybeReturnTopic = async (): Promise<string | undefined> => {
     }
 
     return topic;
-}
-
-const addGPTButtonRandom = (toolbarEl: Element, onClick: (type: string, topic?: string) => Promise<void>) => {
-    const buttonContainer = toolbarEl.children[0]; // doesn't have it's own readable class / testId
-    // create icon component
-    const gptIcon = document.createElement('img');
-    gptIcon.classList.add("gptIcon");
-    gptIcon.setAttribute("src", gptIconSrc);
-
-    // create icon wrapper
-    const gptIconWrapper = document.createElement('div');
-    gptIconWrapper.classList.add("gptIconWrapper");
-    gptIconWrapper.appendChild(gptIcon);
-    gptIconWrapper.onclick = async () => {
-        gptIconWrapper.classList.add("loading");
-        const typeObj = tweetTypes[Math.floor(Math.random() * tweetTypes.length)];
-        const topic = await maybeReturnTopic();
-        await onClick(typeObj.type, topic);
-        gptIconWrapper.classList.remove("loading");
-    }
-
-    // attach to container
-    buttonContainer.appendChild(gptIconWrapper);
 }
 
 const addGPTButtonWithType = (toolbarEl: Element, onClick: (type: string, topic?: string) => Promise<void>) => {
@@ -102,6 +72,21 @@ const addGPTButtonWithType = (toolbarEl: Element, onClick: (type: string, topic?
             await onClick(type, topic);
             iconWrap.classList.remove("loading");
         });
+
+        // adding settings button
+        const separator = document.createElement("div");
+        separator.classList.add("gptSeparator");
+        optionsList.appendChild(separator);
+        const item = document.createElement("div");
+        item.classList.add("gptSelector");
+        item.innerHTML = `⚙️&nbsp;&nbsp;Settings`;
+        item.onclick = (e) => {
+            e.stopPropagation();
+            const url = chrome.runtime.getURL("assets/settings.html");
+            window.open(url, '_blank')?.focus();
+        };
+        optionsList.appendChild(item);
+
 
         optionsList.style.left = `${left}px`;
         optionsList.style.top = `${top}px`;

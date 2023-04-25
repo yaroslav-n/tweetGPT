@@ -1,20 +1,20 @@
 <img src="./docs/logo.png" height="128">
 
-# tweetGPT Chrome Extension
+# tweetGPT Chrome Extension - Community Edition
+This is an open-source edition of the [TweetGPT chrome extension](https://chrome.google.com/webstore/detail/tweetgpt/lkjblpoingopdeaofcaapmeoojjjnhnc). It doesn't use TweetGPT backend and only relies on your own OpenAI API credentials.
 
 ## Requirements
 To use this extension, will you need:
 * Twitter account
+* OpenAI [API KEY](https://platform.openai.com/account/api-keys)
 * Chrome browser
 
-## Installation from Chrome Web Store (v1)
-1. Open the [extension page](https://chrome.google.com/webstore/detail/tweetgpt/lkjblpoingopdeaofcaapmeoojjjnhnc) in Chrome Web Store.
-2. Press "Add to Chrome" button
-## Manual installation (v2)
+## Installation
 1. Clone this repo to your machine
 2. Open [chrome://extensions/](chrome://extensions/) in your browser
 3. Check the box for Developer mode in the top right
 4. Press __Load Unpacked__ button and select the folder with the code
+5. The settings screen should open, where you need to put your OpenAI API Key. You can find your API key on [this page](https://platform.openai.com/account/api-keys).
 
 You can start using the extension now.
 
@@ -37,6 +37,3 @@ For a reply, it will generate a tweet based on the original tweet. For a new twe
 ## ⚠️ Warning
 Depending on the tweet type, TweetGPT can sometimes generate controversial or even offensive tweets.
 Remember, this is like an L2 autopilot - the driver is responsible for the outcome. Don't tweet what you disagree with, just re-generate the tweet instead.
-
-## Feedback
-If you have feedback, please create an issue in the repository or simply send me a DM in Twitter: [@512x512](https://twitter.com/512x512)

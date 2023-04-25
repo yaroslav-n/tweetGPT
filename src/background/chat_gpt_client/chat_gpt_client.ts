@@ -1,6 +1,4 @@
-import { wait } from '../../utils/wait';
-const baseUrl = "https://api.tweetgpt.app";
-const GPT_TOKEN_NAME = 'gpt_token';
+const GPT_TOKEN_NAME = 'openAIToken';
 
 export type TweetProps = {
     type: string,
@@ -11,49 +9,69 @@ export type TweetProps = {
 
 export class ChatGPTClient {
     waitForTokenCallback: ((newGptToken: string) => void) | undefined;
-    async generateTweet(props: TweetProps, repeat: boolean = true): Promise<string | undefined> {
-        const gptToken = await this.getToken();
-        if (!gptToken) {
-            if (repeat) { // repeat only once
-                return this.generateTweet(props, false);
-            }
-            return undefined;
+    async generateTweet(props: TweetProps): Promise<string | undefined> {
+        const token = await this.getToken();
+
+        if (!token) {
+            return Promise.reject();
         }
 
-        let tweet: string | undefined = undefined;
+        const systemMessage = `You are a ghostwriter for users tweets. Use locale "${props.locale}". Return only one tweet. Keep it short.`;
+        const systemMessage2 =
+            "Exclude everything after the tweet. Exclude hashtags. Exclude emojis. Don't apologize. Don't provide translation. Don't provide notes. Exclude сalls to action.";
+        const userMessage = `Write a ${props.type} tweet${
+            props.topic ? ` about ${props.topic}` : ""
+        }${props.replyTo ? ` in reply to a tweet "${props.replyTo}"` : ""}`;
+
+        const body = {
+            stream: false,
+            model: "gpt-3.5-turbo",
+            messages: [
+                { role: "system", content: systemMessage },
+                { role: "system", content: systemMessage2 },
+                { role: "user", content: userMessage },
+            ],
+        };
+
         try {
-            const response = await fetch(`${baseUrl}/tweet/generate`, {
+            const response = await fetch(`https://api.openai.com/v1/chat/completions`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'authorization': `Bearer ${gptToken}`,
+                    'authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify(props),
+                body: JSON.stringify(body),
             });
 
             if (response.status === 403) {
-                console.error(response.body);
                 await chrome.storage.local.remove(GPT_TOKEN_NAME)
-                const newToken = await this.getToken();
-                if (newToken && repeat) { // repeat only once
-                    return this.generateTweet(props, false);
-                }
-                return Promise.reject();
             }
 
             if (response.status !== 200) {
                 console.error(response.body);
+                chrome.notifications.create(
+                    "TextGenerationError",
+                    {
+                      type: 'basic',
+                      iconUrl: "./icons/32.png",
+                      title: 'Error',
+                      message: JSON.stringify(response.body),
+                      priority: 2,
+                    }
+                  );
                 return Promise.reject();
             }
 
             const responseJSON = await response.json();
-            tweet = responseJSON?.tweet;
+            const tweet = responseJSON?.choices[0].message?.content || '';
+            return tweet.trim()
+                .replace(/^\"/g, "")
+                .replace(/\"$/g, "")
+                .trim();
         } catch(e) {
             console.error(e);
             return Promise.reject();
         }
-
-        return tweet;
     }
 
     getTextFromResponse(response: string): string {
@@ -64,54 +82,12 @@ export class ChatGPTClient {
         return tweet;
     }
 
-    async exchangeFirebaseToken(token: string) {
-        const manifestData = chrome.runtime.getManifest();
-        const payload = {
-            "firebase_token": token,
-            "platform": "chrome",
-            "appVersion": manifestData.version,
-        };
-
-        const response = await fetch(`${baseUrl}/auth/token?`+ new URLSearchParams(payload));
-
-        if (response.status === 200) {
-            const data = await response.json();
-            return data.token;
-        }
-        
-        return null;
-    };
-
-    async updateToken(firebaseToken: string) {
-        // exchange token
-        const token = await this.exchangeFirebaseToken(firebaseToken);
-
-        if (!token) {
-            return null;
-        }
-
-        chrome.storage.local.set({[GPT_TOKEN_NAME]: token});
-        if (this.waitForTokenCallback) {
-            this.waitForTokenCallback(token);
-            this.waitForTokenCallback = undefined;
-        }
-    }
-
     async getToken(): Promise<string | undefined> {
-        const result = (await chrome.storage.local.get(GPT_TOKEN_NAME)) || {};
-        if (!result[GPT_TOKEN_NAME]) {
-            var chatUrl = "https://tweetgpt.app/";
-            chrome.windows.create({ url: chatUrl });
+        const result = await chrome.storage.local.get(GPT_TOKEN_NAME);
 
-            return await Promise.race([
-                new Promise<string>((resolve) => {
-                    this.waitForTokenCallback = resolve;
-                }),
-                wait(20000).then(() => { // 20s timeout for user to login
-                    this.waitForTokenCallback = undefined;
-                    return undefined;
-                })
-            ]);
+        if (!result[GPT_TOKEN_NAME]) {
+            let internalUrl = chrome.runtime.getURL("assets/settings.html");
+            chrome.tabs.create({ url: internalUrl });
         }
 
         return result[GPT_TOKEN_NAME];

@@ -8,38 +8,25 @@ chrome.scripting.registerContentScripts([
         js: ["lib/inject.js"],
         css: ["css/inject.css"],
     },
-    {
-        id: `tweetgpt_main_context_inject_${Math.random()}`,
-        world: "MAIN",
-        matches: ["https://tweetgpt.app/*"],
-        js: ["lib/inject_tweetgpt_main.js"],
-        runAt: "document_start",
-    },
-    {
-        id: `tweetgpt_isolated_context_inject_${Math.random()}`,
-        world: "ISOLATED",
-        matches: ["https://tweetgpt.app/*"],
-        js: ["lib/inject_tweetgpt.js"],
-        runAt: "document_start",
-    },
 ]);
+
+chrome.runtime.onInstalled.addListener(function (object) {
+    let internalUrl = chrome.runtime.getURL("assets/settings.html");
+    chrome.tabs.create({ url: internalUrl });
+});
+
 
 const gptChat = new ChatGPTClient();
 
 type Message = {
     type: 'generate_tweet';
     props: TweetProps;
-} | {
-    type: 'new_firebase_token';
-    token: string;
 }
 
 chrome.runtime.onMessage.addListener((message: Message, sender, sendResponse) => {
     if (!message.type) {
         return;
     }
-
-    console.log('>>> message', message);
 
     switch(message.type) {
         case 'generate_tweet':
@@ -59,13 +46,6 @@ chrome.runtime.onMessage.addListener((message: Message, sender, sendResponse) =>
                 }, 
                 () => sendResponse(undefined)
             );
-            break;
-        case 'new_firebase_token':
-            const token = message.token;
-            gptChat.updateToken(token);
-            if (sender.tab?.id) {
-                chrome.tabs.remove(sender.tab?.id);
-            }
             break;
     }
 
