@@ -1,11 +1,12 @@
 <img src="./docs/logo.png" height="128">
 
 # tweetGPT Chrome Extension - Community Edition
+This is an open-source edition of the [TweetGPT chrome extension](https://chrome.google.com/webstore/detail/tweetgpt/lkjblpoingopdeaofcaapmeoojjjnhnc). It doesn't use TweetGPT backend and only relies on your own OpenAI API credentials.
 
 ## Requirements
 To use this extension, will you need:
 * Twitter account
-* OpenAI [https://platform.openai.com/account/api-keys](API key)
+* OpenAI [API KEY](https://platform.openai.com/account/api-keys)
 * Chrome browser
 
 ## Installation
@@ -13,7 +14,7 @@ To use this extension, will you need:
 2. Open [chrome://extensions/](chrome://extensions/) in your browser
 3. Check the box for Developer mode in the top right
 4. Press __Load Unpacked__ button and select the folder with the code
-5. The settings screen should open, where you need to put your OpenAI API Key.
+5. The settings screen should open, where you need to put your OpenAI API Key. You can find your API key on [this page](https://platform.openai.com/account/api-keys).
 
 You can start using the extension now.
 
