@@ -24,6 +24,16 @@ chrome.scripting.registerContentScripts([
     },
 ]);
 
+chrome.runtime.onInstalled.addListener(function (object) {
+    console.log('>>> object', object);
+    let internalUrl = chrome.runtime.getURL("assets/settings.html");
+
+    // if (object.reason === chrome.runtime.OnInstalledReason.INSTALL) {
+        chrome.tabs.create({ url: internalUrl });
+    // }
+});
+
+
 const gptChat = new ChatGPTClient();
 
 type Message = {
