@@ -30,16 +30,15 @@ export const H1 = styled.h1`
 `;
 
 export const H2 = styled.h2`
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
     color: #181C21;
     margin: 0;
 `
 
-export const Subtitle = styled.div`
+export const Subtitle = styled.span`
     font-size: 15px;
     color: #566370;
-    margin-top: 3px;
 
     a {
         color: #566370;
@@ -55,4 +54,28 @@ export const Logo = styled.img`
 export const SettingsBlock = styled.div`
     width: 100%;
     margin-top: 25px;
-`
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+`;
+
+export const TextInput = styled.input`
+    box-sizing: border-box;
+    width: 100%;
+    height: 40px;
+    padding: 0 10px;
+    background: #FFFFFF;
+    border: 1px solid #D1D9DD;
+    color: #181C21;
+    font-size: 15px;
+    border-radius: 5px;
+
+    ::placeholder {
+        color: #D1D9DD;
+    }
+`;
+
+export const Space = styled.div((props: { height: number }) => `
+    height: ${props.height}px;
+`);
