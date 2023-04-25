@@ -17,10 +17,10 @@ export const Checkbox: FC<Props> = ({ value, label, onChange}) => {
     const src = value && icons.checked || icons.uncheked;
 
     return (
-        <Container>
+        <Container onClick={() => onChange(!value)}>
             <div className='iconContainer'>
                 <Icon src={src} />
-                <CheckboxSquare type="checkbox" name={label} checked={value} onClick={() => onChange(!value)}/>
+                <CheckboxSquare type="checkbox" name={label} checked={value}/>
             </div>
             <Label htmlFor={label}>{label}</Label>
         </Container>
@@ -66,4 +66,5 @@ const Label = styled.label`
     font-size: 15px;
     cursor: pointer;
     color: #181C21;
+    user-select: none;
 `
