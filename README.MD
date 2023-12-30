@@ -1,8 +1,7 @@
 <img src="./docs/logo.png" height="128" />
 
 # Archived 
-
-## This repository is no longer supported
+This repository is no longer supported
 
 # tweetGPT Chrome Extension - Community Edition
 This is an open-source edition of the [TweetGPT chrome extension](https://chrome.google.com/webstore/detail/tweetgpt/lkjblpoingopdeaofcaapmeoojjjnhnc). It doesn't use TweetGPT backend and only relies on your own OpenAI API credentials.
