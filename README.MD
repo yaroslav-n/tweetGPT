@@ -1,5 +1,7 @@
 <img src="./docs/logo.png" height="128" />
+
 # Archived 
+
 ## This repository is no longer supported
 
 # tweetGPT Chrome Extension - Community Edition
