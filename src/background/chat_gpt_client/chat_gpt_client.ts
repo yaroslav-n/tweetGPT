@@ -48,7 +48,7 @@ export class ChatGPTClient {
             }
 
             if (response.status !== 200) {
-                console.error(response.body);
+                console.error(JSON.stringify(response.body));
                 chrome.notifications.create(
                     "TextGenerationError",
                     {
